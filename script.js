@@ -1,4 +1,3 @@
-/* Contas a Receber - Frontend (LocalStorage) */
 /* Estruturas:
    clients: [{id,name,phone,email}]
    invoices: [{id,clientId,description,amount,issueDate,dueDate,status,payDate}]
@@ -10,7 +9,7 @@
   const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
   const formatMoney = v => {
     const num = Number(v) || 0;
-    // digit-by-digit safe formatting
+      
     const fixed = (Math.round(num * 100) / 100).toFixed(2);
     return fixed.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
@@ -23,7 +22,7 @@
     save(){ localStorage.setItem('cr_clients', JSON.stringify(this.clients)); localStorage.setItem('cr_invoices', JSON.stringify(this.invoices)); }
   };
 
-  // Elements
+  // Elementos ($$ array ; $ elementos únicos)
   const pages = $$('.page');
   const navBtns = $$('.nav-btn');
   const btnAddClient = $('#btnAddClient');
@@ -53,7 +52,7 @@
   const countOpen = $('#countOpen');
   const countOverdue = $('#countOverdue');
 
-  // navigation
+  // navigação
   navBtns.forEach(b => b.addEventListener('click', e => {
     navBtns.forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
@@ -64,37 +63,45 @@
     if(target === 'dashboard') renderDashboard();
   }));
 
-  // open modals
+  // abrir modais
   btnAddClient.addEventListener('click', () => openModal(modalClient));
   btnAddInvoice.addEventListener('click', () => {
     populateClientSelect();
     openModal(modalInvoice);
   });
 
-  // close modals
+  // fechar modals
   $$('[data-close]', document).forEach(btn => btn.addEventListener('click', () => {
     closeModal(btn.closest('.modal'));
   }));
 
   function openModal(el){ el.classList.remove('hidden'); }
   function closeModal(el){ el.classList.add('hidden'); el.querySelector('form')?.reset(); }
-
-  // add client
+ 
+  // ADICIONAR clientes
   formClient.addEventListener('submit', e => {
     e.preventDefault();
     const fd = new FormData(formClient);
     const name = fd.get('name').trim();
     const phone = fd.get('phone').trim();
     const email = fd.get('email').trim();
+    
+    // Validar telefone: apenas números
+    if(phone && !/^\d+$/.test(phone.replace(/\D/g, ''))){
+      showToast('Telefone deve conter apenas números');
+      return;
+    } 
+  
+    
     const client = { id: uid(), name, phone, email };
     DB.clients.push(client);
     DB.save();
-    showToast('Cliente cadastrado');
+    showToast('Cliente cadastrado');  
     closeModal(modalClient);
     renderClients();
   });
 
-  // add invoice
+  // ADICIONAR fatura
   formInvoice.addEventListener('submit', e => {
     e.preventDefault();
     const fd = new FormData(formInvoice);
@@ -116,7 +123,7 @@
     renderDashboard();
   });
 
-  // render client select for invoice form
+  // renderiza o cliente selecionar para formulário de fatura
   function populateClientSelect(){
     invoiceClientSelect.innerHTML = '';
     if(DB.clients.length === 0){
@@ -130,7 +137,7 @@
     });
   }
 
-  // render clients
+  // render clientes
   function renderClients(filter = ''){
     clientsList.innerHTML = '';
     const list = DB.clients.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()));
@@ -155,10 +162,10 @@
         </div>
       `;
       clientsList.appendChild(wrap);
-      // actions
+      // ações
       wrap.querySelector('[data-action="remove"]').addEventListener('click', () => {
         DB.clients = DB.clients.filter(x => x.id !== c.id);
-        // also remove invoices of client
+        // TAMBEM REMOVER FATURAS DOS CLIENTES
         DB.invoices = DB.invoices.filter(inv => inv.clientId !== c.id);
         DB.save();
         renderClients();
@@ -180,7 +187,7 @@
     invoicesList.innerHTML = '';
     const today = new Date().toISOString().slice(0,10);
     let list = DB.invoices.slice().sort((a,b) => a.dueDate.localeCompare(b.dueDate));
-    // compute status dynamically
+    // COMPUTAR O STATUS DINAMICAMENTE 
     list = list.map(inv => ({...inv, computedStatus: statusOf(inv)}));
 
     if(status !== 'all') list = list.filter(i => i.computedStatus === status);
@@ -319,7 +326,7 @@
       reportByClient.textContent = `${client ? client.name : 'Cliente removido'} — R$ ${formatMoney(top[1])}`;
     } else reportByClient.textContent = '—';
 
-    // counts
+    // CONTAS
     const openCount = DB.invoices.filter(i => statusOf(i) === 'open').length;
     const overdueCount = DB.invoices.filter(i => statusOf(i) === 'overdue').length;
     countOpen.textContent = openCount;

@@ -3,35 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Contas a Receber — Nicolly</title>
+  <title>Contas a Receber</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- Icones (Feather) -->
-  <script src="https://unpkg.com/feather-icons"></script>
-  <!-- Chart.js para gráfico simples -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
-        <div class="logo">💜</div>
-        <h1>Receber</h1>
+        <div class="logo"></div>
+        <h1>Contas a Receber</h1>
       </div>
 
       <nav>
         <button class="nav-btn active" data-target="dashboard">Dashboard</button>
         <button class="nav-btn" data-target="clientes">Clientes</button>
         <button class="nav-btn" data-target="faturas">Faturas</button>
-        <button class="nav-btn" data-target="relatorios">Relatórios</button>
+       <!--<button class="nav-btn" data-target="relatorios">Relatórios</button> -->
       </nav>
 
       <div class="sidebar-footer">
-        <small>Minimal • Roxo</small>
+        <small></small>
       </div>
     </aside>
 
     <main class="main">
-      <!-- Top bar -->
       <header class="topbar">
         <div class="search">
           <input id="globalSearch" placeholder="Pesquisar cliente ou fatura..." />
@@ -43,7 +39,7 @@
         </div>
       </header>
 
-      <!-- Pages -->
+      <!-- PagINAS -->
       <section id="dashboard" class="page active">
         <div class="grid grid-3">
           <div class="card small">
@@ -66,7 +62,7 @@
             <div id="recentInvoices" class="table"></div>
           </div>
 
-          <div class="card">
+       <div class="card">
             <h3>Fluxo mensal</h3>
             <canvas id="chartFlow" height="200"></canvas>
           </div>
@@ -105,7 +101,7 @@
         </div>
       </section>
 
-      <section id="relatorios" class="page">
+     <!-- <section id="relatorios" class="page">
         <div class="card">
           <h3>Relatórios</h3>
           <p>Relatórios rápidos que o professor vai gostar.</p>
@@ -117,16 +113,16 @@
         </div>
       </section>
     </main>
-  </div>
+  </div> -->
 
-  <!-- Modal: Add Client -->
+  <!-- adicionar cliente-->
   <div id="modalClient" class="modal hidden">
     <div class="modal-panel">
       <h3>Novo cliente</h3>
       <form id="formClient">
-        <label>Nome<input name="name" required /></label>
-        <label>Contato<input name="phone" /></label>
-        <label>E-mail<input name="email" type="email" /></label>
+        <label>Nome<input type="text" name="name" required /></label>
+        <label>Contato<input type="tel" name="phone" placeholder="(85) 99999-0000" required></label>
+        <label>E-mail<input type="email" name="email" type="email" /></label>
         <div class="modal-actions">
           <button type="button" class="btn-ghost" data-close>Cancelar</button>
           <button class="btn-primary">Salvar</button>
@@ -135,7 +131,7 @@
     </div>
   </div>
 
-  <!-- Modal: Add Invoice -->
+  <!-- adicionar fatura -->
   <div id="modalInvoice" class="modal hidden">
     <div class="modal-panel">
       <h3>Nova fatura</h3>
