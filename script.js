@@ -333,42 +333,7 @@
     countOverdue.textContent = overdueCount;
 
     renderRecent();
-    renderChart();
-  }
-
-  // simple monthly chart (last 6 months)
-  let chartInstance = null;
-  function renderChart(){
-    const ctx = document.getElementById('chartFlow');
-    if(!ctx) return;
-    // prepare months
-    const date = new Date();
-    const labels = [];
-    const receivable = [];
-    for(let i=5;i>=0;i--){
-      const d = new Date(date.getFullYear(), date.getMonth()-i, 1);
-      const key = d.toISOString().slice(0,7); // YYYY-MM
-      labels.push(d.toLocaleString('pt-BR',{month:'short', year:'numeric'}));
-      // sum invoices due that month
-      const sum = DB.invoices.filter(inv => inv.dueDate.slice(0,7) === key).reduce((s,inv) => s + Number(inv.amount || 0), 0);
-      receivable.push(sum);
-    }
-    if(chartInstance) chartInstance.destroy();
-    chartInstance = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Vencimentos',
-          data: receivable,
-          backgroundColor: 'rgba(167,139,250,0.9)'
-        }]
-      },
-      options: {
-        plugins:{legend:{display:false}},
-        scales:{y:{ticks:{callback:val=> 'R$ ' + formatMoney(val)}}}
-      }
-    });
+    
   }
 
   // toast
