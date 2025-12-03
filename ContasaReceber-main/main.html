@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contas a Receber</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo"></div>
+        <h1>Contas a Receber</h1>
+      </div>
+
+      <nav>
+        <button class="nav-btn active" data-target="dashboard">Dashboard</button>
+        <button class="nav-btn" data-target="clientes">Clientes</button>
+        <button class="nav-btn" data-target="faturas">Faturas</button>
+       <!--<button class="nav-btn" data-target="relatorios">Relatórios</button> -->
+      </nav>
+
+      <div class="sidebar-footer">
+        <small></small>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="search">
+          <input id="globalSearch" placeholder="Pesquisar cliente ou fatura..." />
+          <i data-feather="search"></i>
+        </div>
+        <div class="top-actions">
+          <button id="btnAddInvoice" class="btn-primary">Nova fatura</button>
+          <button id="btnAddClient" class="btn-ghost">Novo cliente</button>
+        </div>
+      </header>
+
+      <!-- PagINAS -->
+      <section id="dashboard" class="page active">
+        <div class="grid grid-3">
+          <div class="card small">
+            <h3>Total a receber</h3>
+            <p id="totalReceber">R$ 0,00</p>
+          </div>
+          <div class="card small">
+            <h3>Vencidas</h3>
+            <p id="totalVencidas">R$ 0,00</p>
+          </div>
+          <div class="card small">
+            <h3>Recebidas (mês)</h3>
+            <p id="totalRecebidasMes">R$ 0,00</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Faturas recentes</h3>
+            <div id="recentInvoices" class="table"></div>
+          </div>
+
+      <div class="card">
+          
+           
+          </div>
+        </div>
+      </section> 
+
+      <section id="clientes" class="page">
+        <div class="card">
+          <div class="card-header">
+            <h3>Clientes</h3>
+            <div>
+              <input id="clienteSearch" placeholder="Buscar cliente..." />
+            </div>
+          </div>
+          <div id="clientsList" class="table"></div>
+        </div>
+      </section>
+
+      <section id="faturas" class="page">
+        <div class="card">
+          <div class="card-header">
+            <h3>Faturas</h3>
+            <div class="filters">
+              <select id="filterStatus">
+                <option value="all">Todos</option>
+                <option value="open">Em aberto</option>
+                <option value="paid">Pago</option>
+                <option value="overdue">Vencido</option>
+              </select>
+              <input id="filterClient" placeholder="Filtrar por cliente..." />
+              <input id="filterDate" type="date" />
+            </div>
+          </div>
+
+          <div id="invoicesList" class="table"></div>
+        </div>
+      </section>
+
+  <!-- adicionar cliente-->
+  <div id="modalClient" class="modal hidden">
+    <div class="modal-panel">
+      <h3>Novo cliente</h3>
+      <form id="formClient">
+        <label>Nome<input type="text" name="name" required /></label>
+        <label>Contato<input type="tel" name="phone" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g,)" placeholder="(85) 99999-0000" required></label>
+        <label>E-mail<input type="email" name="email" type="email" /></label>0
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close>Cancelar</button>
+          <button class="btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- adicionar fatura -->
+  <div id="modalInvoice" class="modal hidden">
+    <div class="modal-panel">
+      <h3>Nova fatura</h3>
+      <form id="formInvoice">
+        <label>Cliente
+          <select name="clientId" required id="invoiceClientSelect"></select>
+        </label>
+
+        <label>Descrição<input name="description" /></label>
+        <label>Valor (R$)<input name="amount" type="number" step="0.01" required /></label>
+        <label>Data de emissão<input name="issueDate" type="date" required /></label>
+        <label>Data de vencimento<input name="dueDate" type="date" required /></label>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close>Cancelar</button>
+          <button class="btn-primary">Criar fatura</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="script.js" defer></script>
+  <script>feather.replace()</script>
+</body>
+</html>
