@@ -1,10 +1,34 @@
-/* Estruturas:
-   clients: [{id,name,phone,email}]
-   invoices: [{id,clientId,description,amount,issueDate,dueDate,status,payDate}]
-*/
+// ======= UTILITÁRIOS =======
+// formatMoney, uid, $
+
+//
+// ======= BANCO DE DADOS =======
+// DB.clients, DB.invoices, DB.save()
+
+//
+// ======= CLIENTES =======
+// renderClients()
+// addClient()
+
+//
+// ======= FATURAS =======
+// renderInvoices()
+// marcarComoPago()
+// removerFatura()
+
+//
+// ======= DASHBOARD =======
+// renderDashboard()
+// renderRecent()
+
+//
+// ======= FILTROS =======
+// filterStatus
+// filterClient
+// globalSearch
+
 
 (() => {
-  // helpers
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
   const formatMoney = v => {
@@ -15,7 +39,7 @@
   };
   const uid = () => 'id' + Math.random().toString(36).slice(2,9);
 
-  // Storage
+
   const DB = {
     clients: JSON.parse(localStorage.getItem('cr_clients') || '[]'),
     invoices: JSON.parse(localStorage.getItem('cr_invoices') || '[]'),
@@ -38,7 +62,7 @@
   const toastEl = $('#toast');
   const globalSearch = $('#globalSearch');
 
-  // filters
+  // filtros
   const filterStatus = $('#filterStatus');
   const filterClient = $('#filterClient');
   const filterDate = $('#filterDate');
@@ -92,8 +116,8 @@
       return;
     } 
   
-    
-    const client = { id: uid(), name, phone, email };
+    const document = fd.get('document');
+    const client = { id: uid(), name, phone, email, document};
     DB.clients.push(client);
     DB.save();
     showToast('Cliente cadastrado');  
@@ -312,27 +336,7 @@
     totalReceberEl.textContent = 'R$ ' + formatMoney(totalReceber);
     totalVencidasEl.textContent = 'R$ ' + formatMoney(totalVencidas);
     totalRecebidasMesEl.textContent = 'R$ ' + formatMoney(totalRecebidasMes);
-
-    // report by client (top)
-    const totalsByClient = {};
-    DB.invoices.forEach(i => {
-      if(!totalsByClient[i.clientId]) totalsByClient[i.clientId] = 0;
-      totalsByClient[i.clientId] += Number(i.amount || 0);
-    });
-    const entries = Object.entries(totalsByClient);
-    const top = entries.sort((a,b)=>b[1]-a[1])[0];
-    if(top){
-      const client = DB.clients.find(c => c.id === top[0]);
-      reportByClient.textContent = `${client ? client.name : 'Cliente removido'} — R$ ${formatMoney(top[1])}`;
-    } else reportByClient.textContent = '—';
-
-    // CONTAS
-    const openCount = DB.invoices.filter(i => statusOf(i) === 'open').length;
-    const overdueCount = DB.invoices.filter(i => statusOf(i) === 'overdue').length;
-    countOpen.textContent = openCount;
-    countOverdue.textContent = overdueCount;
-
-    renderRecent();
+    
     
   }
 
@@ -371,6 +375,27 @@
       DB.save();
     }
   }
+// ADICIONANDO VALIDACAO DO CPF E CNPJ
+const docInputs = document.querySelectorAll('input[name="docTipo"]');
+const documentInput = document.getElementById('documentInput');
+const docLabel = document.getElementById('docLabel');
+
+docInputs.forEach(radio => {
+  radio.addEventListener('change', () => {
+    if (radio.value === 'cpf') {
+      docLabel.firstChild.textContent = 'CPF ';
+      documentInput.placeholder = 'Digite o CPF';
+      documentInput.maxLength = 11;
+      documentInput.value = '';
+    } else {
+      docLabel.firstChild.textContent = 'CNPJ ';
+      documentInput.placeholder = 'Digite o CNPJ';
+      documentInput.maxLength = 14;
+      documentInput.value = '';
+    }
+  });
+});
+
 
   // initial render
   seedIfEmpty();
